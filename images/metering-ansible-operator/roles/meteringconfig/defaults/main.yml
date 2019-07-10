@@ -92,6 +92,49 @@ _storage_overrides:
           defaultFS: "s3a://{{ _storage_spec | json_query('hive.s3.bucket') | regex_replace('\\/?$', '/') }}"
         hdfs:
           enabled: false
+
+  azure:
+    storage:
+      hive:
+        # azure storage defaults
+        azure:
+          # Intentionally an invalid default name to ensure that this is overridden, and obvious when it's not.
+          container: "-unconfigured-metering-container-name-"
+          secretName: ""
+          storageAccountName: ""
+          secretAccessKey: ""
+          createSecret: true
+          secretName: ""
+    presto:
+      spec:
+        config:
+          azure:
+            secretName: "{{ _storage_spec | json_query('hive.azure.secretName') }}"
+            createSecret: "{{ _storage_spec | json_query('hive.azure.createSecret') }}"
+            storageAccountName: "{{ _storage_spec | json_query('hive.azure.storageAccountName') }}"
+            secretAccessKey: "{{ _storage_spec | json_query('hive.azure.secretAccessKey') }}"
+    hive:
+      spec:
+        config:
+          metastoreWarehouseDir: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '/') }}"
+          azure:
+            secretName: "{{ _storage_spec | json_query('hive.azure.secretName') }}"
+            createSecret: "{{ _storage_spec | json_query('hive.azure.createSecret') }}"
+            storageAccountName: "{{ _storage_spec | json_query('hive.azure.storageAccountName') }}"
+            secretAccessKey: "{{ _storage_spec | json_query('hive.azure.secretAccessKey') }}"
+    hadoop:
+      spec:
+        config:
+          # regex_replace to append a trailing slash if missing
+          defaultFS: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '/') }}"
+          azure:
+            secretName: "{{ _storage_spec | json_query('hive.azure.secretName') }}"
+            createSecret: "{{ _storage_spec | json_query('hive.azure.createSecret') }}"
+            storageAccountName: "{{ _storage_spec | json_query('hive.azure.storageAccountName') }}"
+            secretAccessKey: "{{ _storage_spec | json_query('hive.azure.secretAccessKey') }}"
+        hdfs:
+          enabled: false
+
   hdfs:
     hadoop:
       spec:
