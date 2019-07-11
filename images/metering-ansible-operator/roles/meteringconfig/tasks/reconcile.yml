@@ -1,5 +1,4 @@
 ---
-
 - name: Validate storage configuration
   fail:
     msg: "Unsupported spec.storage.type, only 'hive' is  a supported option"

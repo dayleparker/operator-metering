@@ -105,6 +105,7 @@ _storage_overrides:
           secretAccessKey: ""
           createSecret: true
           secretName: ""
+          rootDirectory: ""
     presto:
       spec:
         config:
@@ -116,7 +117,9 @@ _storage_overrides:
     hive:
       spec:
         config:
-          metastoreWarehouseDir: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '/') }}"
+          # metastoreWarehouseDir: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '/') }}"
+          metastoreWarehouseDir: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '') }}@{{ _storage_spec | json_query('hive.azure.storageAccountName') | regex_replace('\\/?$', '')  }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory')| default('', True) | regex_replace('\\/?$', '')   }}"
+          # metastoreWarehouseDir: "{{_url_container_name}}+{{_url_storageacc_name}}+{{_url_root_dir}}"
           azure:
             secretName: "{{ _storage_spec | json_query('hive.azure.secretName') }}"
             createSecret: "{{ _storage_spec | json_query('hive.azure.createSecret') }}"
@@ -126,7 +129,10 @@ _storage_overrides:
       spec:
         config:
           # regex_replace to append a trailing slash if missing
-          defaultFS: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '/') }}"
+          # defaultFS: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '/') }}"
+          defaultFS: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '') }}@{{ _storage_spec | json_query('hive.azure.storageAccountName') | regex_replace('\\/?$', '')  }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory')| default('', True) | regex_replace('\\/?$', '')   }}"
+          # defaultFS: "{{_url_container_name}}+{{_url_storageacc_name}}+{{_url_root_dir}}"
+
           azure:
             secretName: "{{ _storage_spec | json_query('hive.azure.secretName') }}"
             createSecret: "{{ _storage_spec | json_query('hive.azure.createSecret') }}"
@@ -163,6 +169,11 @@ _storage_overrides:
         hdfs:
           enabled: false
 
+
+
+# _url_container_name: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '/') }}"
+# _url_storageacc_name: "@{{ _storage_spec | json_query('hive.azure.storageAccountName') | regex_replace('\\/?$', '/')  }}.blob.core.windows.net"
+# _url_root_dir: "{{ _storage_spec | json_query('hive.azure.rootDirectory') | regex_replace('\\/?$', '/') }}"
 meteringconfig_storage_hive_storage_type: "{{ _storage_spec | json_query('hive.type') }}"
 meteringconfig_storage_overrides: "{{ _storage_overrides[meteringconfig_storage_hive_storage_type] | default({}, true) }}"
 

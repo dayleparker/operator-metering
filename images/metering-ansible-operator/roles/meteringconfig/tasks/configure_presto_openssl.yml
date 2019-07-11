@@ -3,6 +3,7 @@
 #
 # Generate a Server cert/key
 #
+
 - name: Setup the server certificate/key
   block:
   - name: Generate an RSA private key for Presto
