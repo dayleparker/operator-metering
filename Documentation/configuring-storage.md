@@ -34,6 +34,25 @@ If you left `spec.storage.hive.s3.createBucket` set to true, or unset, then you 
 Please note that this must be done before installation.
 Changing these settings after installation will result in broken and unexpected behavior.
 
+## Storing data in Azure
+
+You can also store your data in Azure blob storage, to do so, you must use an existing container.
+Edit the `spec.storage` section in the example [azure-storage.yaml][azure-storage-config] configuration.
+Set the  `spec.storage.hive.azure.container` and `spec.storage.hive.azure.storageAccountName` value.
+`spec.storage.hive.azure.secretAccessKey` must also be set, however, these two values can be set with an existing secret. To use an already existing secret, set createSecret to false and leave the two fields blank, with the secret following this format:
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: your-azure-secret
+data:
+  azure-storage-account-name: "dGVzdAo="
+  azure-secret-access-key: "c2VjcmV0Cg=="
+```
+The `spec.storage.hive.azure.container` should be the container you wish to store metering data at, and the optional `spec.storage.hive.azure.roodDirectory` should be the folder you want your data in, inside the container.
+Note that `spec.storage.hive.azure.createSecret` cannot be true with `spec.storage.hive.azure.secretName` non-empty at the same time.
+
+
 ## Using shared volumes for storage
 
 Metering has no storage by default, but can use any ReadWriteMany PersistentVolume or [StorageClass][storage-classes] that provisions a ReadWriteMany PersistentVolume.
@@ -59,6 +78,7 @@ For more details read [configuring HDFS][configuring-hdfs].
 
 [storage-classes]: https://kubernetes.io/docs/concepts/storage/storage-classes/
 [s3-storage-config]: ../manifests/metering-config/s3-storage.yaml
+[azure-blob-storage-config]: ../manifests/metering-config/azure-blob-storage.yaml
 [shared-storage-config]: ../manifests/metering-config/shared-storage.yaml
 [hdfs-storage-config]: ../manifests/metering-config/hdfs-storage.yaml
 [configuring-hive-metastore]: configuring-hive-metastore.md

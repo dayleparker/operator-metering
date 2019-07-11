@@ -37,7 +37,7 @@
   when: meteringconfig_storage_hive_storage_type == 's3' and meteringconfig_storage_s3_create_bucket
 
 
-  - name: Configure Azure Storage
+- name: Configure Azure Storage
   block:
     - name: Validate Metering Azure bucket name
       assert:
@@ -52,5 +52,5 @@
           - meteringconfig_storage_azure_credentials_secret_name == ""
         msg: "storage.hive.azure.secretName is only used to reference existing secrets, must be empty if creating new secrets"
 
-  when: meteringconfig_storage_hive_storage_type == 'azure' and meteringconfig_storage_createSecret
+  when: meteringconfig_storage_hive_storage_type == 'azure' and meteringconfig_storage_azure_create_secret
 

@@ -6,11 +6,11 @@ spec:
   storage:
     type: "hive"
     hive:
-      type: "s3"
-      s3:
-        bucket: "bucketname/path/"
-        region: "us-west-1"
-        secretName: "my-aws-secret"
-        # Set to false if you want to provide an existing bucket, instead of
-        # having Metering create the bucket on your behalf.
-        createBucket: true
+      type: "azure"
+      azure:
+        container: "bucket1"
+        storageAccountName: "meteringazure"
+        secretAccessKey: "secret-key-here"
+        createSecret: true
+        secretName: ""
+        rootDirectory: "/testDir"

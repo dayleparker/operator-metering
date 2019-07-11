@@ -169,7 +169,10 @@ _storage_overrides:
         hdfs:
           enabled: false
 
-
+meteringconfig_storage_azure_container_name: "{{ meteringconfig_spec | json_query('storage.hive.azure.container') }}"
+meteringconfig_storage_azure_storage_account_name: "{{ meteringconfig_spec | json_query('storage.hive.azure.storageAccountName') }}"
+meteringconfig_storage_azure_credentials_secret_name: "{{ meteringconfig_spec | json_query('storage.hive.azure.secretName') }}"
+meteringconfig_storage_azure_create_secret: "{{ meteringconfig_spec | json_query('storage.hive.azure.createSecret') }}"
 
 # _url_container_name: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '/') }}"
 # _url_storageacc_name: "@{{ _storage_spec | json_query('hive.azure.storageAccountName') | regex_replace('\\/?$', '/')  }}.blob.core.windows.net"
