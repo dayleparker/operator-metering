@@ -172,6 +172,21 @@ _storage_overrides:
 _whatever_variable: "{{ secret_buf.resources[0].data['azure-storage-account-name'] | default('',True) | b64decode }}"
 _use_azure_secret: "{{ meteringconfig_spec.storage.hive.azure.createSecret }}"
 
+_azure_account_overides:
+    hadoop:
+      spec:
+        config:
+          # regex_replace to append a trailing slash if missing
+          # defaultFS: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '/') }}"
+          defaultFS: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '') }}@{{ _whatever_variable | regex_replace('\\/?$', '')  }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory')| default('', True) | regex_replace('\\/?$', '')   }}"
+          # defaultFS: "{{_url_container_name}}+{{_url_storageacc_name}}+{{_url_root_dir}}"
+    hive:
+      spec:
+        config:
+          # metastoreWarehouseDir: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '/') }}"
+          metastoreWarehouseDir: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '') }}@{{ _whatever_variable | regex_replace('\\/?$', '')  }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory')| default('', True) | regex_replace('\\/?$', '')   }}"
+
+
 meteringconfig_storage_azure_container_name: "{{ meteringconfig_spec | json_query('storage.hive.azure.container') }}"
 meteringconfig_storage_azure_storage_account_name: "{{ meteringconfig_spec | json_query('storage.hive.azure.storageAccountName') }}"
 meteringconfig_storage_azure_credentials_secret_name: "{{ meteringconfig_spec | json_query('storage.hive.azure.secretName') }}"
