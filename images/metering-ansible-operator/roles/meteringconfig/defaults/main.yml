@@ -104,7 +104,6 @@ _storage_overrides:
           storageAccountName: ""
           secretAccessKey: ""
           createSecret: true
-          secretName: ""
           rootDirectory: ""
     presto:
       spec:
@@ -168,6 +167,10 @@ _storage_overrides:
           defaultFS: "file://{{ _storage_spec | json_query('hive.sharedPVC.mountPath') | default('/user/hive/warehouse', true) }}"
         hdfs:
           enabled: false
+
+
+_whatever_variable: "{{ secret_buf.resources[0].data['azure-storage-account-name'] | default('',True) | b64decode }}"
+_use_azure_secret: "{{ meteringconfig_spec.storage.hive.azure.createSecret }}"
 
 meteringconfig_storage_azure_container_name: "{{ meteringconfig_spec | json_query('storage.hive.azure.container') }}"
 meteringconfig_storage_azure_storage_account_name: "{{ meteringconfig_spec | json_query('storage.hive.azure.storageAccountName') }}"
@@ -262,6 +265,7 @@ _tls_overrides:
           createSecret: true
           secretName: "{{ _meteringconfig_presto_client_secret_name }}"
 
+
 # check if the user's spec contains the top-level tls.enabled field. if true, use the value stored in that field, else default to the value stored in values.yaml
 meteringconfig_tls_enabled: "{{ meteringconfig_default_values | combine(meteringconfig_spec_overrides, recursive=True) | json_query('tls.enabled') }}"
 _meteringconfig_tls_overrides: "{{ meteringconfig_tls_enabled | ternary(_tls_overrides, {}) }}"
@@ -349,3 +353,4 @@ meteringconfig_create_reporting_operator_hive_auth_secrets: "{{ _reporting_op_sp
 meteringconfig_create_reporting_operator_tls_secrets: "{{ _reporting_op_spec.config.tls.api.createSecret | default(false) }}"
 meteringconfig_create_reporting_operator_route: "{{ _reporting_op_spec.route.enabled | default(false) }}"
 meteringconfig_create_reporting_operator_cluster_monitoring_view_rbac: "{{ _reporting_op_spec.rbac.createClusterMonitoringViewRBAC | default(true) }}"
+

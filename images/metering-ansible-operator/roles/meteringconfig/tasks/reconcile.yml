@@ -1,4 +1,31 @@
 ---
+
+- name: Check for secret
+  k8s_facts:
+    api_version: v1
+    kind: Secret
+    name: "{{ meteringconfig_spec.storage.hive.azure.secretName }}"
+    namespace: "{{ meta.namespace }}"
+  register: secret_buf
+
+- name: asdf
+  debug:
+    var:
+    - meta.namespace
+    - meteringconfig_spec.storage.hive.azure.secretName
+    - _use_azure_secret
+    - _whatever_variable
+    msg:
+    - "YOYOYOYOYOY is {{ meta.namespace }}"
+    - "YOYOYOYOYOY is {{ meta.namespace }}"
+    - "YOYOYOYOYOY is {{ meteringconfig_spec.storage.hive.azure.secretName }}"
+    - "YOYOYOYOYOY is {{ _use_azure_secret }}"
+    - "YOYOYOYOYOY is {{ _whatever_variable }}"
+    # - "YOYOYOYOYOY is {{ _whatever_variable }}"
+
+
+
+
 - name: Validate storage configuration
   fail:
     msg: "Unsupported spec.storage.type, only 'hive' is  a supported option"
