@@ -169,23 +169,22 @@ _storage_overrides:
           enabled: false
 
 
-_whatever_variable: "{{ secret_buf.resources[0].data['azure-storage-account-name'] | default('',True) | b64decode }}"
-_use_azure_secret: "{{ meteringconfig_spec.storage.hive.azure.createSecret }}"
+_whatever_variable: "asfafasfaf"
 
 _azure_account_overides:
-    hadoop:
-      spec:
-        config:
-          # regex_replace to append a trailing slash if missing
-          # defaultFS: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '/') }}"
-          defaultFS: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '') }}@{{ _whatever_variable | regex_replace('\\/?$', '')  }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory')| default('', True) | regex_replace('\\/?$', '')   }}"
-          # defaultFS: "{{_url_container_name}}+{{_url_storageacc_name}}+{{_url_root_dir}}"
-    hive:
-      spec:
-        config:
-          # metastoreWarehouseDir: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '/') }}"
-          metastoreWarehouseDir: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '') }}@{{ _whatever_variable | regex_replace('\\/?$', '')  }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory')| default('', True) | regex_replace('\\/?$', '')   }}"
-
+  hadoop:
+    spec:
+      config:
+        # regex_replace to append a trailing slash if missing
+        # defaultFS: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '/') }}"
+        defaultFS: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '') }}@{{ _whatever_variable | regex_replace('\\/?$', '')  }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory') | regex_replace('\\/?$', '')   }}"
+        # defaultFS: "{{_url_container_name}}+{{_url_storageacc_name}}+{{_url_root_dir}}"
+  hive:
+    spec:
+      config:
+        # metastoreWarehouseDir: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '/') }}"
+        metastoreWarehouseDir: "wasbs://{{ _storage_spec | json_query('hive.azure.container') | regex_replace('\\/?$', '') }}@{{ _whatever_variable | regex_replace('\\/?$', '')  }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory')| default('', True) | regex_replace('\\/?$', '')   }}"
+_meteringconfig_azure_overrides: "{{ _azure_account_overides | default({}, true)}}"
 
 meteringconfig_storage_azure_container_name: "{{ meteringconfig_spec | json_query('storage.hive.azure.container') }}"
 meteringconfig_storage_azure_storage_account_name: "{{ meteringconfig_spec | json_query('storage.hive.azure.storageAccountName') }}"
@@ -296,7 +295,7 @@ meteringconfig_reporting_overrides:
           enabled: "{{ meteringconfig_reporting_enable_post_kube_1_14_datasources }}"
 
 # combine the _meteringconfig_tls_overrides dictionary last to enforce when spec.tls.enabled is specified and set to true
-meteringconfig_spec: "{{ meteringconfig_default_values | combine(meteringconfig_default_image_overrides, meteringconfig_storage_overrides, meteringconfig_reporting_overrides, meteringconfig_spec_overrides, _meteringconfig_root_ca_overrides, _meteringconfig_tls_overrides, recursive=True) }}"
+meteringconfig_spec: "{{ meteringconfig_default_values | combine(meteringconfig_default_image_overrides, meteringconfig_storage_overrides, _meteringconfig_tls_overrides, meteringconfig_reporting_overrides, meteringconfig_spec_overrides, _meteringconfig_root_ca_overrides, _meteringconfig_tls_overrides, _meteringconfig_azure_overrides, recursive=True) }}"
 
 meteringconfig_storage_s3_create_bucket: "{{ meteringconfig_spec | json_query('storage.hive.s3.createBucket') }}"
 meteringconfig_storage_s3_bucket_name: "{{ (meteringconfig_spec | json_query('storage.hive.s3.bucket') | default('', true)).split('/')[0] }}"
