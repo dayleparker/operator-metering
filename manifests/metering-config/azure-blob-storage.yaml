@@ -1,0 +1,17 @@
+apiVersion: metering.openshift.io/v1
+kind: MeteringConfig
+metadata:
+  name: "operator-metering"
+spec:
+  storage:
+    type: "hive"
+    hive:
+      type: "azure"
+      azure:
+        container: "bucket1"
+        storageAccountName: "meteringazure"
+        secretAccessKey: "your-secret-here"
+        #set to false if you want to reference an exting secret, and set the secretName to the filename
+        createSecret: true
+        secretName: ""
+        rootDirectory: "/testDir"
