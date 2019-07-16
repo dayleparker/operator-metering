@@ -1,7 +1,7 @@
 ---
 
 #
-# Generate a Server cert/key
+# Generate the Presto Server cert/key
 #
 
 - name: Setup the server certificate/key
@@ -36,9 +36,10 @@
       ownca_path: "{{ certificates_dir.path }}/ca.crt"
       ownca_privatekey_path: "{{ certificates_dir.path }}/ca.key"
       selfsigned_digest: sha256
+  when: not presto_tls_secret_exists
 
 #
-# Generate the Client cert/key to enable client-side authentication
+# Generate the Presto Client cert/key to enable client-side authentication
 #
 - name: Setup the client certificate/key
   block:
@@ -71,3 +72,4 @@
       ownca_path: "{{ certificates_dir.path }}/ca.crt"
       ownca_privatekey_path: "{{ certificates_dir.path }}/ca.key"
       selfsigned_digest: sha256
+  when: not presto_auth_secret_exists or not presto_hive_tls_secret_exists
