@@ -116,7 +116,7 @@ __storage_overrides:
     hive:
       spec:
         config:
-          metastoreWarehouseDir: "wasbs://{{ _storage_spec | json_query('hive.azure.container') }}@{{ _storage_spec | json_query('hive.azure.storageAccountName') }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory') | default('/', True) }}"
+          metastoreWarehouseDir: "wasbs://{{ _storage_spec | json_query('hive.azure.container') }}@{{ _storage_spec | json_query('hive.azure.storageAccountName') }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory') | default('/', True) | regex_replace('^\\/?', '/') }}"
           azure:
             secretName: "{{ _storage_spec | json_query('hive.azure.secretName') }}"
             createSecret: "{{ _storage_spec | json_query('hive.azure.createSecret') }}"
@@ -125,7 +125,7 @@ __storage_overrides:
     hadoop:
       spec:
         config:
-          defaultFS: "wasbs://{{ _storage_spec | json_query('hive.azure.container') }}@{{ _storage_spec | json_query('hive.azure.storageAccountName') }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory') | default('/', True) }}"
+          defaultFS: "wasbs://{{ _storage_spec | json_query('hive.azure.container') }}@{{ _storage_spec | json_query('hive.azure.storageAccountName') }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory') | default('/', True) | regex_replace('^\\/?', '/') }}"
           azure:
             secretName: "{{ _storage_spec | json_query('hive.azure.secretName') }}"
             createSecret: "{{ _storage_spec | json_query('hive.azure.createSecret') }}"
@@ -173,11 +173,11 @@ _azure_account_overides:
     hadoop:
       spec:
         config:
-          defaultFS: "wasbs://{{ _storage_spec | json_query('hive.azure.container') }}@{{ _azure_secret_account_name  }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory')| default('/', True)  }}"
+          defaultFS: "wasbs://{{ _storage_spec | json_query('hive.azure.container') }}@{{ _azure_secret_account_name  }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory')| default('/', True) | regex_replace('^\\/?', '/') }}"
     hive:
       spec:
         config:
-          metastoreWarehouseDir: "wasbs://{{ _storage_spec | json_query('hive.azure.container') }}@{{ _azure_secret_account_name }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory')| default('/', True)  }}"
+          metastoreWarehouseDir: "wasbs://{{ _storage_spec | json_query('hive.azure.container') }}@{{ _azure_secret_account_name }}.blob.core.windows.net{{ _storage_spec | json_query('hive.azure.rootDirectory')| default('/', True) | regex_replace('^\\/?', '/') }}"
 
 _meteringconfig_azure_overrides: "{{ meteringconfig_storage_azure_create_secret | ternary({} , _azure_account_overides ) | default({}, true) }}"
 _storage_overrides: "{{ __storage_overrides | combine(_meteringconfig_azure_overrides, recursive = True) }}"
