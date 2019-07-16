@@ -37,7 +37,7 @@ Changing these settings after installation will result in broken and unexpected 
 ## Storing data in Azure
 
 You can also store your data in Azure blob storage, to do so, you must use an existing container.
-Edit the `spec.storage` section in the example [azure-storage.yaml][azure-storage-config] configuration.
+Edit the `spec.storage` section in the example [azure-blob-storage.yaml][azure-blob-storage-config]] configuration.
 Set the  `spec.storage.hive.azure.container` and `spec.storage.hive.azure.storageAccountName` value.
 `spec.storage.hive.azure.secretAccessKey` must also be set, however, the value can be set with an existing secret. To use an already existing secret, set createSecret to false and leave the two fields blank, with the secret following this format:
 ```
@@ -51,7 +51,6 @@ data:
 ```
 The `spec.storage.hive.azure.container` should be the container you wish to store metering data at, and the optional `spec.storage.hive.azure.roodDirectory` should be the folder you want your data in, inside the container.
 Note that `spec.storage.hive.azure.createSecret` cannot be true with `spec.storage.hive.azure.secretName` non-empty at the same time.
-Also note that `spec.storage.hive.azure.storageAccountName` must also be set, even if referencing an existing secret.
 
 
 ## Using shared volumes for storage

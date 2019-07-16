@@ -36,6 +36,20 @@
 
   when: meteringconfig_storage_hive_storage_type == 's3' and meteringconfig_storage_s3_create_bucket
 
+- name: Azure account name secret extraction
+  block:
+    - name: Check for secret
+      k8s_facts:
+        api_version: v1
+        kind: Secret
+        name: "{{ meteringconfig_spec.storage.hive.azure.secretName }}"
+        namespace: "{{ meta.namespace }}"
+      register: azure_secret_buf
+
+    - name: azure accoutname extraction
+      set_fact:
+        _azure_secret_account_name: "{{ azure_secret_buf.resources[0].data['azure-storage-account-name'] | b64decode | default(omit)  }}"
+  when: meteringconfig_storage_hive_storage_type == 'azure' and not meteringconfig_storage_azure_create_secret
 
 - name: Configure Azure Storage
   block:
